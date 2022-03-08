@@ -4,22 +4,26 @@
  */
 
 function loadNextPage() {
-  let user = document.getElementById("username").value;
+  console.log("In loadNextPage()");
 
-  const dataToSend = { username: user};
-  post("http://basic-web.dev.avc.web.usf.edu/",dataToSend).then(function(response){
-    let username;
+  const user = document.getElementById("username").value;
+  const dataToSend = { id: user, score: 0};
+  console.log(dataToSend);
+
+  post("http://basic-web.dev.avc.web.usf.edu/:",dataToSend).then(function(response){
     switch(response.status) {
       case 200: // User successfully updated.
-        username = response.data.username;
+        console.log("case 200");
         break;
       case 201: // User successfully created.
-        username = response.data.username;
+        console.log("case 201");
         break;
       case 400: // Invalid request.
+        console.log("case 400");
         console.error(response.data);
         break;
       case 500: // Internal server error.
+        console.log("case 500");
         console.error(response.data);
         break;
     }
@@ -29,11 +33,35 @@ function loadNextPage() {
 
 }
 
-// document.getElementById("welcome").innerHTML = "Welcome ".concat(user);
+function welcomeUser() {
+  console.log("In welcomeUser()");
+  
+  get("http://basic-web.dev.avc.web.usf.edu/:a").then(function(response) {
+      console.log("test1");
 
-// function display(user) {
-//   document.getElementById("welcome").innerHTML = "Welcome ".concat(user);
-// }
+      switch(response.status) {
+        case 200: // User successfully recieved.
+          console.log("case 200");
+          const id = response.data.id;
+          const score = response.data.score;
+          console.log(response.data.id);
+          console.log(id);
+          break;
+        case 404: // User does not exist.
+          console.log("case 404");
+          post("http://basic-web.dev.avc.web.usf.edu/:", { id: "John Doe", score: 0 }); //create a new user.
+          break;
+      }
+
+    }
+  );
+}
+
+function display(id, score) {
+  console.log(id, score);
+  let message = "Welcome ".concat(id);
+  document.getElementById("welcome").innerHTML = message;
+}
 
 
 
@@ -57,13 +85,14 @@ function loadNextPage() {
  * });
  */
  function get(url) {
+   console.log("In get()");
     return new Promise((resolve, reject) => {
       const http = new XMLHttpRequest();
+      console.log("test2");
       http.onload = function() {
+        console.log("Exiting get()");
         resolve({ status: http.status, data: JSON.parse(http.response) });
       };
-      http.open("GET", url);
-      http.send();
     });
   }
   
