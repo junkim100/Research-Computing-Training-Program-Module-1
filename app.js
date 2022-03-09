@@ -10,7 +10,7 @@ function loadNextPage() {
   const dataToSend = { id: user, score: 0};
   console.log(dataToSend);
 
-  post("http://basic-web.dev.avc.web.usf.edu/:",dataToSend).then(function(response){
+  post("http://basic-web.dev.avc.web.usf.edu/",dataToSend).then(function(response){
     switch(response.status) {
       case 200: // User successfully updated.
         console.log("case 200");
@@ -36,10 +36,10 @@ function loadNextPage() {
 function welcomeUser() {
   console.log("In welcomeUser()");
 
-  get("http://basic-web.dev.avc.web.usf.edu/:").then(function(response){
+  get("http://basic-web.dev.avc.web.usf.edu").then(function(response){
     if(response.status == 200) {
       console.log("case 200");
-      const username = response.data.id; //The username that was requested. In this case it is "myUserName".
+      const username = String(response.data.id); //The username that was requested. In this case it is "myUserName".
       const score = response.data.score; //The user's current score.
       console.log(username, score);
       display (username, score);
@@ -47,7 +47,7 @@ function welcomeUser() {
     else {
       //User "myUserName" not found.
       //response.data is null
-      post("https://example.com/myUserName", { score: 0 }); //create a new user.
+      post("http://basic-web.dev.avc.web.usf.edu", { id: "John Doe", score: 0 }); //create a new user.
     }
   });
 }
@@ -148,3 +148,29 @@ function display(username, score) {
   /**
    * @typedef {{status: number, data: User|Error}} Response
    */
+
+function fizzbuzz() {
+  let realValue = parseInt(document.getElementById("realValue").textContent);
+  realValue += 1;
+  document.getElementById("realValue").innerHTML = String(realValue);
+
+  let displayValue ="";
+
+  if (realValue%3 == 0 && realValue%5 == 0) {
+    displayValue = "FizzBuzz";
+  }
+  else if (realValue%3 == 0) {
+    displayValue = "Fizz";
+  }
+  else if (realValue%5 == 0) {
+    displayValue = "Buzz";
+  }
+  else {
+    displayValue = String(realValue);
+  }
+
+  console.log(realValue);
+  console.log(displayValue);
+
+  document.getElementById("displayValue").innerHTML = displayValue;
+}
