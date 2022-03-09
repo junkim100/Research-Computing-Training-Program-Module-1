@@ -11,12 +11,14 @@
 </head>
 
 <body>
-	<h1>Welcome</h1>
-	<div>
-		<label>Enter Name</label>
-		<input id="username" type="text" placeholder="Enter Name Here" required>
-	</div>
-	<button id="submit" onclick="loadNextPage()">Submit</button>
+	<form action="fizzbuzz.html" method="GET">
+		<h1>Welcome</h1>
+		<div>
+			<label for="name">Enter Name</label>
+			<input name="name" id="username" type="text" placeholder="Enter Name Here" required>
+		</div>
+		<button type="submit" id="submit" onclick="loadNextPage()">Submit</button>
+	</form>
 
     <script src="app.js"></script>
 </body>
