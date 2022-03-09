@@ -6,11 +6,14 @@
 function loadNextPage() {
   console.log("In loadNextPage()");
 
-  const user = document.getElementById("username").value;
+  const user = String(document.getElementById("username").value);
   const dataToSend = { id: user, score: 0};
   console.log(dataToSend);
 
-  post("http://basic-web.dev.avc.web.usf.edu/",dataToSend).then(function(response){
+  const url = "http://basic-web.dev.avc.web.usf.edu/".concat(user);
+  console.log(url);
+
+  post(url ,dataToSend).then(function(response){
     switch(response.status) {
       case 200: // User successfully updated.
         console.log("case 200");
@@ -33,29 +36,35 @@ function loadNextPage() {
 
 }
 
-function welcomeUser() {
-  console.log("In welcomeUser()");
+  function welcomeUser() {
+    console.log("In welcomeUser()");
 
-  get("http://basic-web.dev.avc.web.usf.edu").then(function(response){
-    if(response.status == 200) {
-      console.log("case 200");
-      const username = String(response.data.id); //The username that was requested. In this case it is "myUserName".
-      const score = response.data.score; //The user's current score.
-      console.log(username, score);
-      display (username, score);
-    }
-    else {
-      //User "myUserName" not found.
-      //response.data is null
-      post("http://basic-web.dev.avc.web.usf.edu", { id: "John Doe", score: 0 }); //create a new user.
-    }
-  });
-}
+    // let url = "http://basic-web.dev.avc.web.usf.edu/".concat(user);
 
-function display(username, score) {
-  let message = "Welcome ".concat(username);
-  document.getElementById("welcome").innerHTML = message;
-}
+    get("http://basic-web.dev.avc.web.usf.edu/ad").then(function(response){
+      console.log(response);
+      if(response.status == 200) {
+        console.log("case 200");
+        const username = String(response.data.id); //The username that was requested. In this case it is "myUserName".
+        const score = parseInt(response.data.score); //The user's current score.
+        console.log(username, score);
+        display (username, score);
+        document.getElementById("realValue").innerHTML = score;
+      }
+      else {
+        //User "myUserName" not found.
+        //response.data is null
+        post("http://basic-web.dev.avc.web.usf.edu", { id: response.data.id, score: 0 }); //create a new user.
+      }
+    });
+
+  }
+
+  function display(username, score) {
+    let message = "Welcome ".concat(username);
+    document.getElementById("welcome").innerHTML = message;
+    document.getElementById("displayValue").innerHTML = score;
+  }
 
 /**
  * Request json data from the back-end API. This function is used to read data from the API. To update data in the API, use post().
@@ -82,7 +91,8 @@ function display(username, score) {
     return new Promise((resolve, reject) => {
       const http = new XMLHttpRequest();
       http.onload = function() {
-        resolve({ status: http.status, data: JSON.parse(http.response) });
+        console.log(http);
+        resolve({ status: http.status, data: JSON.parse(http.responseText) });
       };
       http.open("GET", url);
       http.send();
@@ -151,6 +161,7 @@ function display(username, score) {
 
 function fizzbuzz() {
   let realValue = parseInt(document.getElementById("realValue").textContent);
+  console.log("realvalue");console.log(realValue);
   realValue += 1;
   document.getElementById("realValue").innerHTML = String(realValue);
 
