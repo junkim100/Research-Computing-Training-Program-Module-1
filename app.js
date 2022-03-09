@@ -35,35 +35,27 @@ function loadNextPage() {
 
 function welcomeUser() {
   console.log("In welcomeUser()");
-  
-  get("http://basic-web.dev.avc.web.usf.edu/:a").then(function(response) {
-      console.log("test1");
 
-      switch(response.status) {
-        case 200: // User successfully recieved.
-          console.log("case 200");
-          const id = response.data.id;
-          const score = response.data.score;
-          console.log(response.data.id);
-          console.log(id);
-          break;
-        case 404: // User does not exist.
-          console.log("case 404");
-          post("http://basic-web.dev.avc.web.usf.edu/:", { id: "John Doe", score: 0 }); //create a new user.
-          break;
-      }
-
+  get("http://basic-web.dev.avc.web.usf.edu/:").then(function(response){
+    if(response.status == 200) {
+      console.log("case 200");
+      const username = response.data.id; //The username that was requested. In this case it is "myUserName".
+      const score = response.data.score; //The user's current score.
+      console.log(username, score);
+      display (username, score);
     }
-  );
+    else {
+      //User "myUserName" not found.
+      //response.data is null
+      post("https://example.com/myUserName", { score: 0 }); //create a new user.
+    }
+  });
 }
 
-function display(id, score) {
-  console.log(id, score);
-  let message = "Welcome ".concat(id);
+function display(username, score) {
+  let message = "Welcome ".concat(username);
   document.getElementById("welcome").innerHTML = message;
 }
-
-
 
 /**
  * Request json data from the back-end API. This function is used to read data from the API. To update data in the API, use post().
@@ -86,13 +78,14 @@ function display(id, score) {
  */
  function get(url) {
    console.log("In get()");
+
     return new Promise((resolve, reject) => {
       const http = new XMLHttpRequest();
-      console.log("test2");
       http.onload = function() {
-        console.log("Exiting get()");
         resolve({ status: http.status, data: JSON.parse(http.response) });
       };
+      http.open("GET", url);
+      http.send();
     });
   }
   
@@ -128,6 +121,8 @@ function display(id, score) {
    * });
    */
   function post(url, data) {
+    console.log("In post()");
+
     data = JSON.stringify(data);
     return new Promise((resolve, reject) => {
       const http = new XMLHttpRequest();
@@ -137,6 +132,7 @@ function display(id, score) {
       http.open("POST", url);
       //Make sure that the server knows we're sending it json data.
       http.setRequestHeader("Content-Type", "application/json");
+      console.log(data);
       http.send(data);
     });
   }
