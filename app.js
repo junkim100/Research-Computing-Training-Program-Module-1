@@ -64,7 +64,7 @@
  * });
  */
 function post(url, data) {
-  console.log("In post()");
+  console.log("In post()", data);
 
   data = JSON.stringify(data);
   return new Promise((resolve, reject) => {
@@ -104,7 +104,7 @@ function sendData() {
   console.log("In sendData()");
 
   const user = String(document.getElementById("username").value);
-  const dataToSend = { id: user, score: 0};
+  const dataToSend = { id: user};
   const url = "http://basic-web.dev.avc.web.usf.edu/".concat(user);
 
   post(url ,dataToSend).then(function(response){
@@ -152,12 +152,10 @@ function welcomeUser() {
       display (id, score);
 
       const dataArr = [id, score];
-      display(id, score);
 
       // Set value of increment button to response.data
       // The response is getting passed into fizzbuzz() as an argument
       document.getElementById("increment").setAttribute("value", dataArr);
-      console.log("ha", document.getElementById("increment").value);
 
       document.getElementById("realValue").innerHTML = score;
     }
@@ -169,7 +167,9 @@ function welcomeUser() {
       post(url, { id: user, score: 0 });
 
       // Reload fizzbuzz.html after creating new user so that the user information is displayed
-      window.location.assign("fizzbuzz.html");
+      // window.location.assign("fizzbuzz.html");
+
+      document.getElementById("welcome").innerHTML = "User created. Go back to the previous page and enter username again. "
     }
   });
 
@@ -191,7 +191,8 @@ function display(id, score) {
  * User score gets posted to the server using the API
  */
 function fizzbuzz(dataArr) {
-  console.log("In fizzbuzz()", dataArr);
+  console.log("In fizzbuzz()");
+  console.log("User: ", dataArr);
   let displayValue, realValue = parseInt(document.getElementById("realValue").textContent);
   realValue += 1;
   document.getElementById("realValue").innerHTML = String(realValue);
@@ -209,5 +210,39 @@ function fizzbuzz(dataArr) {
 
   console.log(realValue);
   console.log(displayValue);
+
+  dataArr = String(dataArr);
+  const arr = dataArr.split(",");
+  console.log("arr", arr);
+  dataToSend = { id: String(arr[0]), score: parseInt(arr[1]) }
+  const url = "http://basic-web.dev.avc.web.usf.edu/".concat(dataToSend.id);
+  console.log("dataToSend: ", dataToSend);
+  console.log("url: ", url);
+
+  post(url ,dataToSend).then(function(response){
+    switch(response.status) {
+      case 200: // User successfully updated
+        console.log("case 200");
+        break;
+      case 201: // User successfully created
+        console.log("case 201");
+        break;
+      case 400: // Invalid request
+        console.log("case 400");
+        console.error(response.data);
+        break;
+      case 500: // Internal server error
+        console.log("case 500");
+        console.error(response.data);
+        break;
+    }
+  });
+  console.log("type", typeof dataToSend.score)
+
+  const newDataArr = dataToSend.id.concat(",").concat(dataToSend.score+1);
+  console.log("newDataArr: ", newDataArr);
+
+  document.getElementById("increment").setAttribute("value", newDataArr);
+  // console.log("fuck", document.getElementById("increment").value)
 
 }
