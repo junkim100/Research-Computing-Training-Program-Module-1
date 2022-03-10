@@ -15,10 +15,12 @@
 <body onload="welcomeUser()">
 	<h1 id="welcome"></h1>
 
-    <p>Your current FizzBuzz value is: </p>
-    <p class="hide" id="realValue"></p> <!-- Hidden by style.css - Only used as refenrece by fizzbuzz() in app.js -->
-    <p id="displayValue"></p>
-    <button id="increment" value="" onclick="fizzbuzz(this.value)">Click to increment</button>
+    <div>
+        <span>Your current FizzBuzz value is: </span>
+        <p class="hide" id="realValue"></p> <!-- Hidden by style.css - Only used as refenrece by fizzbuzz() in app.js -->
+        <span id="displayValue"></span>
+    </div>
+    <button id="increment" value="" onclick="fizzbuzz(this.value)">Click to Increment</button>
 
     <script src="app.js"></script>
 </body>

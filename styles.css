@@ -9,3 +9,7 @@ h1 {
 .hide {
     display: none;
 }
+
+body {
+    text-align: center;
+}

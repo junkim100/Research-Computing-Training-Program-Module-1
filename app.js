@@ -214,7 +214,7 @@ function fizzbuzz(dataArr) {
   dataArr = String(dataArr);
   const arr = dataArr.split(",");
   console.log("arr", arr);
-  dataToSend = { id: String(arr[0]), score: parseInt(arr[1]) }
+  dataToSend = { id: String(arr[0]), score: parseInt(parseInt(arr[1])+1) }
   const url = "http://basic-web.dev.avc.web.usf.edu/".concat(dataToSend.id);
   console.log("dataToSend: ", dataToSend);
   console.log("url: ", url);
@@ -239,10 +239,9 @@ function fizzbuzz(dataArr) {
   });
   console.log("type", typeof dataToSend.score)
 
-  const newDataArr = dataToSend.id.concat(",").concat(dataToSend.score+1);
+  const newDataArr = dataToSend.id.concat(",").concat(dataToSend.score);
   console.log("newDataArr: ", newDataArr);
 
   document.getElementById("increment").setAttribute("value", newDataArr);
-  // console.log("fuck", document.getElementById("increment").value)
 
 }
