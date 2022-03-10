@@ -180,7 +180,7 @@ function welcomeUser() {
  * Displays user's id and score into HTML
  */
 function display(id, score) {
-  let message = "Welcome ".concat(id);
+  let message = "Welcome, ".concat(id);
   document.getElementById("welcome").innerHTML = message;
   document.getElementById("displayValue").innerHTML = score;
 }
