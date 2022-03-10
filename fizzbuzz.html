@@ -16,9 +16,9 @@
 	<h1 id="welcome"></h1>
 
     <p>Your current FizzBuzz value is: </p>
-    <p class="hide" id="realValue"></p>
+    <p class="hide" id="realValue"></p> <!-- Hidden by style.css - Only used as refenrece by fizzbuzz() in app.js -->
     <p id="displayValue"></p>
-    <button onclick="fizzbuzz()">Click to increment</button>
+    <button id="increment" value="n" onclick="fizzbuzz(this.value)">Click to increment</button>
 
     <script src="app.js"></script>
 </body>

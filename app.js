@@ -1,87 +1,4 @@
 /**
- * Used by login.html's submit button
- * User input gets posted to the server using the API
- */
-
-function loadNextPage() {
-  console.log("In loadNextPage()");
-
-  const user = String(document.getElementById("username").value);
-  const dataToSend = { id: user, score: 0};
-  console.log(dataToSend);
-
-  const url = "http://basic-web.dev.avc.web.usf.edu/".concat(user);
-  console.log(url);
-
-  post(url ,dataToSend).then(function(response){
-    switch(response.status) {
-      case 200: // User successfully updated
-        console.log("case 200");
-        break;
-      case 201: // User successfully created
-        console.log("case 201");
-        break;
-      case 400: // Invalid request
-        console.log("case 400");
-        console.error(response.data);
-        break;
-      case 500: // Internal server error
-        console.log("case 500");
-        console.error(response.data);
-        break;
-    }
-  });
-
-  // window.location.assign("fizzbuzz.html");
-
-}
-
-function welcomeUser() {
-  console.log("In welcomeUser()");
-
-  const queryString = window.location.search;
-  const urlParams = new URLSearchParams(queryString);
-  const user = urlParams.get("name");
-  const url = "http://basic-web.dev.avc.web.usf.edu/".concat(user);
-  console.log(url);
-
-  get(url).then(function(response){
-    if(response.status == 200) {
-      console.log("case 200");
-      
-      const username = String(response.data.id); //The username that was requested. In this case it is "myUserName".
-      const score = parseInt(response.data.score); //The user's current score.
-      console.log(username, score);
-      display (username, score);
-      document.getElementById("realValue").innerHTML = score;
-    }
-    // User does not exist
-    else {
-      console.log("case 404");
-
-      // Create new user
-      post(url, { id: user, score: 0 });
-
-      // Reload fizzbuzz.html after creating new user so that the user information is displayed
-      window.location.assign("fizzbuzz.html");
-
-      // const username = String(response.data.id); //The username that was requested. In this case it is "myUserName".
-      // const score = parseInt(response.data.score); //The user's current score.
-      // console.log(username, score);
-      // display (username, score);
-      // document.getElementById("realValue").innerHTML = score;
-    }
-  });
-
-}
-
-function display(username, score) {
-  let message = "Welcome ".concat(username);
-  document.getElementById("welcome").innerHTML = message;
-  document.getElementById("displayValue").innerHTML = score;
-}
-
-/**
  * Request json data from the back-end API. This function is used to read data from the API. To update data in the API, use post().
  * @param {string} url - The url of the API plus the API path.
  * @returns {Promise<Response>} - A Promise of the Response.
@@ -100,19 +17,20 @@ function display(username, score) {
  *   }
  * });
  */
-function get(url) {
+ function get(url) {
   console.log("In get()");
 
   return new Promise((resolve, reject) => {
     const http = new XMLHttpRequest();
     http.onload = function() {
-      console.log(http);
       resolve({ status: http.status, data: JSON.parse(http.responseText) });
     };
     http.open("GET", url);
     http.send();
   });
 }
+
+
 
 /**
  * Send data to the back-end API.
@@ -162,6 +80,8 @@ function post(url, data) {
   });
 }
 
+
+
 /**
  * @typedef {{id: string, score: number}} User
  */
@@ -174,29 +94,120 @@ function post(url, data) {
  * @typedef {{status: number, data: User|Error}} Response
  */
 
-function fizzbuzz() {
-  let realValue = parseInt(document.getElementById("realValue").textContent);
-  console.log("realvalue");console.log(realValue);
+
+
+/**
+ * Used by login.html's submit button
+ * User input gets posted to the server using the API
+ */
+function sendData() {
+  console.log("In sendData()");
+
+  const user = String(document.getElementById("username").value);
+  const dataToSend = { id: user, score: 0};
+  const url = "http://basic-web.dev.avc.web.usf.edu/".concat(user);
+
+  post(url ,dataToSend).then(function(response){
+    switch(response.status) {
+      case 200: // User successfully updated
+        console.log("case 200");
+        break;
+      case 201: // User successfully created
+        console.log("case 201");
+        break;
+      case 400: // Invalid request
+        console.log("case 400");
+        console.error(response.data);
+        break;
+      case 500: // Internal server error
+        console.log("case 500");
+        console.error(response.data);
+        break;
+    }
+  });
+}
+
+
+
+/**
+ * Used by fizzbuzz.html on page load
+ * Get user id and score from API then display it using display()
+ */
+function welcomeUser() {
+  console.log("In welcomeUser()");
+
+  const queryString = window.location.search;
+  const urlParams = new URLSearchParams(queryString);
+  const user = urlParams.get("name");
+  const url = "http://basic-web.dev.avc.web.usf.edu/".concat(user);
+  console.log(url);
+
+  get(url).then(function(response){
+
+    if(response.status == 200) {
+      console.log("case 200");
+
+      const id = String(response.data.id); // User's id recieved from API
+      const score = parseInt(response.data.score); // User's score recieved from API
+      display (id, score);
+
+      const dataArr = [id, score];
+      display(id, score);
+
+      // Set value of increment button to response.data
+      // The response is getting passed into fizzbuzz() as an argument
+      document.getElementById("increment").setAttribute("value", dataArr);
+      console.log("ha", document.getElementById("increment").value);
+
+      document.getElementById("realValue").innerHTML = score;
+    }
+    // User does not exist
+    else {
+      console.log("case 404");
+
+      // Create new user with score 0
+      post(url, { id: user, score: 0 });
+
+      // Reload fizzbuzz.html after creating new user so that the user information is displayed
+      window.location.assign("fizzbuzz.html");
+    }
+  });
+
+}
+
+
+/**
+ * Displays user's id and score into HTML
+ */
+function display(id, score) {
+  let message = "Welcome ".concat(id);
+  document.getElementById("welcome").innerHTML = message;
+  document.getElementById("displayValue").innerHTML = score;
+}
+
+
+/**
+ * Used by fizzbuzz.html's increment button
+ * User score gets posted to the server using the API
+ */
+function fizzbuzz(dataArr) {
+  console.log("In fizzbuzz()", dataArr);
+  let displayValue, realValue = parseInt(document.getElementById("realValue").textContent);
   realValue += 1;
   document.getElementById("realValue").innerHTML = String(realValue);
 
-  let displayValue ="";
-
-  if (realValue%3 == 0 && realValue%5 == 0) {
+  if (realValue%3 == 0 && realValue%5 == 0) // Divisible by 15
     displayValue = "FizzBuzz";
-  }
-  else if (realValue%3 == 0) {
+  else if (realValue%3 == 0) // Divisible by 3
     displayValue = "Fizz";
-  }
-  else if (realValue%5 == 0) {
+  else if (realValue%5 == 0) // Divisible by 5
     displayValue = "Buzz";
-  }
-  else {
+  else
     displayValue = String(realValue);
-  }
+
+  document.getElementById("displayValue").innerHTML = displayValue;
 
   console.log(realValue);
   console.log(displayValue);
 
-  document.getElementById("displayValue").innerHTML = displayValue;
 }
